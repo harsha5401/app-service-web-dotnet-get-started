@@ -17,6 +17,7 @@ steps:
   displayName: 'Restore NuGet Packages'
   inputs:
     restoreSolution: '$(solution)'
+    command: 'restore'
 
 # - task: VSBuild@1
 #   displayName: 'Build Solution using MSBuild'
@@ -28,7 +29,7 @@ steps:
   inputs:
     solution: '**/*.sln'
     configuration: '$(buildConfiguration)'
-    platform: '$(buildPlatform)'
+    # platform: '$(buildPlatform)'
     clean: true
     restoreNugetPackages: true
     msbuildArgs: '/p:OutputPath=$(Build.ArtifactStagingDirectory)\bin /p:BaseOutputPath=$(Build.ArtifactStagingDirectory)\bin'  
