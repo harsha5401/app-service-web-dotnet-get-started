@@ -28,7 +28,7 @@ steps:
   inputs:
     solution: '$(solution)'
     configuration: '''$(buildConfiguration)'''
-    platform: '$(buildPlatform)'
+    # platform: '$(buildPlatform)'
     clean: true
     restoreNugetPackages: true
     msbuildArgs: '/p:OutputPath=$(Build.ArtifactStagingDirectory)\bin /p:BaseOutputPath=$(Build.ArtifactStagingDirectory)\bin'  
