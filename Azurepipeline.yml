@@ -26,12 +26,12 @@ steps:
 #     configuration: '$(buildConfiguration)'
 - task: MSBuild@1
   inputs:
-    solution: '$(solution)'
+    solution: **/*.csproj
     configuration: '$(buildConfiguration)'
-    # platform: '$(buildPlatform)'
+    platform: '$(buildPlatform)'
     clean: true
     restoreNugetPackages: true
-    # msbuildArgs: '/p:OutputPath=$(Build.ArtifactStagingDirectory)\bin /p:BaseOutputPath=$(Build.ArtifactStagingDirectory)\bin'  
+    msbuildArgs: '/p:OutputPath=$(Build.ArtifactStagingDirectory)\bin /p:BaseOutputPath=$(Build.ArtifactStagingDirectory)\bin'  
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifacts'
