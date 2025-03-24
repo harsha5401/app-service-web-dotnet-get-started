@@ -1,48 +1,95 @@
 trigger:
-- main
-
+  none
+# - main
+# - FB   #manual
+# - '*'
+  # branches:
+  #     include:
+  #       - main
+  #       - FB
 pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+stages:  
+- stage: Build
+  displayName: Application Check Out and Build
+  jobs:
+  - job: Build
+    displayName: Install .Net
+    steps:
+      # 1. Checkout repository with full history
+      - checkout: self
+        fetchDepth: 0
+          
+      - task: UseDotNet@2
+        inputs:
+              packageType: 'sdk'
+              version: '6.x'  
 
-steps:
-- task: NuGetToolInstaller@1
-  displayName: 'Install NuGet'
+         
+      - task: NuGetCommand@2
+        inputs:
+          command: 'restore'
+          restoreSolution: '**/*.sln'
 
-- task: NuGetCommand@2
-  displayName: 'Restore NuGet Packages'
-  inputs:
-    restoreSolution: '$(solution)'
-    command: 'restore'
-- task: PowerShell@2
-  displayName: 'Verify Build Output'
-  inputs:
-    targetType: 'inline'
-    script: 'Get-ChildItem -Recurse $(Build.ArtifactStagingDirectory)'
-    
-# - task: VSBuild@1
-#   displayName: 'Build Solution using MSBuild'
+          # 4. Build the solution
+      - task: VSBuild@1
+        inputs:
+          solution: '**/*.sln'
+          msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:publishUrl=$(Build.ArtifactStagingDirectory)'
+          configuration: '$(buildConfiguration)'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'Package'
+          publishLocation: 'Container' 
+# trigger:
+# - main
+
+# pool:
+#   vmImage: 'windows-latest'
+
+# variables:
+#   solution: '**/*.sln'
+#   buildPlatform: 'Any CPU'
+#   buildConfiguration: 'Release'
+
+# steps:
+# - task: NuGetToolInstaller@1
+#   displayName: 'Install NuGet'
+
+# - task: NuGetCommand@2
+#   displayName: 'Restore NuGet Packages'
 #   inputs:
-#     solution: '$(solution)'
-#     platform: '$(buildPlatform)'
+#     restoreSolution: '$(solution)'
+#     command: 'restore'
+# - task: PowerShell@2
+#   displayName: 'Verify Build Output'
+#   inputs:
+#     targetType: 'inline'
+#     script: 'Get-ChildItem -Recurse $(Build.ArtifactStagingDirectory)'
+    
+# # - task: VSBuild@1
+# #   displayName: 'Build Solution using MSBuild'
+# #   inputs:
+# #     solution: '$(solution)'
+# #     platform: '$(buildPlatform)'
+# #     configuration: '$(buildConfiguration)'
+# - task: MSBuild@1
+#   inputs:
+#     solution: '**/*.sln'
 #     configuration: '$(buildConfiguration)'
-- task: MSBuild@1
-  inputs:
-    solution: '**/*.sln'
-    configuration: '$(buildConfiguration)'
-    # platform: '$(buildPlatform)'
-    clean: true
-    restoreNugetPackages: true
-    msbuildArgs: '/p:OutDir=$(Build.ArtifactStagingDirectory)\bin\'
+#     # platform: '$(buildPlatform)'
+#     clean: true
+#     restoreNugetPackages: true
+#     msbuildArgs: '/p:OutDir=$(Build.ArtifactStagingDirectory)\bin\'
     
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifacts'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+# - task: PublishBuildArtifacts@1
+#   displayName: 'Publish Artifacts'
+#   inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#     ArtifactName: 'drop'
+#     publishLocation: 'Container'
