@@ -1,50 +1,52 @@
 trigger:
-  none
-# - main
-# - FB   #manual
-# - '*'
-  # branches:
-  #     include:
-  #       - main
-  #       - FB
+  branches:
+    include:
+      - main  # Change this to match your default branch
+
 pool:
   vmImage: 'windows-latest'
 
 variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-stages:  
-- stage: Build
-  displayName: Application Check Out and Build
-  jobs:
-  - job: Build
-    displayName: Install .Net
-    steps:
-      # 1. Checkout repository with full history
-      - checkout: self
-        fetchDepth: 0
-          
-      - task: UseDotNet@2
-        inputs:
-              packageType: 'sdk'
-              version: '6.x'  
+  outputDirectory: '$(Build.ArtifactStagingDirectory)\drop'
 
-         
-      - task: NuGetCommand@2
-        inputs:
-          command: 'restore'
-          restoreSolution: '**/*.sln'
+steps:
 
-          # 4. Build the solution
-      - task: VSBuild@1
-        inputs:
-          solution: '**/*.sln'
-          msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:publishUrl=$(Build.ArtifactStagingDirectory)'
-          configuration: '$(buildConfiguration)'
-      - task: PublishBuildArtifacts@1
-        inputs:
-          pathToPublish: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'Package'
-          publishLocation: 'Container' 
+# Step 1: Restore NuGet Packages
+- task: NuGetCommand@2
+  displayName: 'Restore NuGet Packages'
+  inputs:
+    command: 'restore'
+    restoreSolution: '$(solution)'
+
+# Step 2: Build the Solution using MSBuild
+- task: VSBuild@1
+  displayName: 'Build Solution'
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+# Step 3: Publish Build Artifacts
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+
+# Step 4: Deploy (Optional - Copy Files Over SSH to Windows Server)
+# - task: CopyFilesOverSSH@0
+#   displayName: 'Deploy to Windows Server'
+#   inputs:
+#     sshEndpoint: 'MyWindowsServer'  # Define this in Azure DevOps Service Connections
+#     sourceFolder: '$(Build.ArtifactStagingDirectory)/drop'
+#     targetFolder: 'C:\inetpub\wwwroot\myapp'  # Change this to your IIS site folder
+#     cleanTargetFolder: true
+#     overwrite: true
+' 
 # trigger:
 # - main
 
