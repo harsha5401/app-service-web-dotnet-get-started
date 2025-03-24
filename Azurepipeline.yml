@@ -73,11 +73,11 @@ steps:
     restoreSolution: '$(solution)'
 
 # Step 2: Build the Solution using MSBuild
-- task: VSBuild@1
+- task: MSBuild@1
   displayName: 'Build Solution'
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:Configuration=$(buildConfiguration) /p:OutputPath=$(Build.ArtifactStagingDirectory)\drop'
+    msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:PublishDirectory="$(Build.ArtifactStagingDirectory)\drop" /p:Configuration=$(buildConfiguration)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
