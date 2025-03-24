@@ -46,7 +46,7 @@ steps:
 #     targetFolder: 'C:\inetpub\wwwroot\myapp'  # Change this to your IIS site folder
 #     cleanTargetFolder: true
 #     overwrite: true
-' 
+ 
 # trigger:
 # - main
 
