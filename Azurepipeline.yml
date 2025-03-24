@@ -26,7 +26,7 @@ steps:
   displayName: 'Build Solution'
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+    msbuildArgs: '/p:Configuration=$(buildConfiguration) /p:OutputPath=$(Build.ArtifactStagingDirectory)\drop'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
