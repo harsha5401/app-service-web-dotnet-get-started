@@ -27,13 +27,27 @@ steps:
     WebsitePhysicalPathAuth: 'WebsiteUserPassThrough'
     Bindings: 'http:*:8080:'
 
-- script: |
-    echo "Waiting for site to start..."
-    Start-Sleep -s 5
-    Invoke-WebRequest -Uri "http://localhost:8080/Home/Index" -OutFile output.html
-    echo "======= ASP.NET Page Output ======="
-    Get-Content output.html
+- task: PowerShell@2
   displayName: "Fetch and Print Web Page"
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Waiting for site to start..."
+      Start-Sleep -Seconds 5
+      
+      # Fetch the web page
+      $url = "http://localhost:8080/Home/Index"
+      $outputFile = "$(Build.ArtifactStagingDirectory)/output.html"
+      
+      try {
+        Invoke-WebRequest -Uri $url -OutFile $outputFile
+        Write-Host "======= ASP.NET Page Output ======="
+        Get-Content $outputFile
+      } catch {
+        Write-Host "Failed to fetch the page. Error: $_"
+        exit 1
+      }
+
 
 # trigger:
 #   branches:
