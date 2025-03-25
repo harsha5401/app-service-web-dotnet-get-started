@@ -68,29 +68,28 @@ steps:
   
 - script: echo Hello from here and there also
   displayName: 'Run a one-line script'
-
 # Step 1: Restore NuGet Packages
-- task: NuGetCommand@2
-  displayName: 'Restore NuGet Packages'
-  inputs:
-    command: 'restore'
-    restoreSolution: '$(solution)'
+# - task: NuGetCommand@2
+#   displayName: 'Restore NuGet Packages'
+#   inputs:
+#     command: 'restore'
+#     restoreSolution: '$(solution)'
 
-# Step 2: Build the Solution using MSBuild
-- task: MSBuild@1
-  displayName: 'Build Solution'
-  inputs:
-    solution: '$(solution)'
-    msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:PublishDirectory="$(Build.ArtifactStagingDirectory)\drop" /p:Configuration=$(buildConfiguration)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+# # Step 2: Build the Solution using MSBuild
+# - task: MSBuild@1
+#   displayName: 'Build Solution'
+#   inputs:
+#     solution: '$(solution)'
+#     msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:PublishDirectory="$(Build.ArtifactStagingDirectory)\drop" /p:Configuration=$(buildConfiguration)'
+#     platform: '$(buildPlatform)'
+#     configuration: '$(buildConfiguration)'
 
-# Step 3: Publish Build Artifacts
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifacts'
-  inputs:
-    pathToPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: 'drop'
+# # Step 3: Publish Build Artifacts
+# - task: PublishBuildArtifacts@1
+#   displayName: 'Publish Artifacts'
+#   inputs:
+#     pathToPublish: '$(Build.ArtifactStagingDirectory)'
+#     artifactName: 'drop'
 
 # Step 4: Deploy (Optional - Copy Files Over SSH to Windows Server)
 # - task: CopyFilesOverSSH@0
