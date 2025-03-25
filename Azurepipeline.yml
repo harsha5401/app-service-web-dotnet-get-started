@@ -65,7 +65,7 @@ variables:
 
 steps:
   
-- script: echo Hello, world!
+- script: echo Hello from here
   displayName: 'Run a one-line script'
 # Step 1: Restore NuGet Packages
 # - task: NuGetCommand@2
