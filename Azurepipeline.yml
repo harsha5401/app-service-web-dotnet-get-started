@@ -64,13 +64,11 @@ variables:
   outputDirectory: '$(Build.ArtifactStagingDirectory)\drop'
 
 steps:
-<<<<<<< HEAD
+
   
 - script: echo Hello from here and there
   displayName: 'Run a one-line script'
-=======
 
->>>>>>> parent of e508231 (Update Azurepipeline.yml)
 # Step 1: Restore NuGet Packages
 - task: NuGetCommand@2
   displayName: 'Restore NuGet Packages'
