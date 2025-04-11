@@ -57,11 +57,7 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-  outputDirectory: '$(Build.ArtifactStagingDirectory)\drop'
+
 
 steps:
 
